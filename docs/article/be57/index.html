@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/pandll_180.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/pandll_32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/pandll_16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/pandll_512.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Supervisor," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Superviosr 介绍Supervisor是一款用采用Client/Server架构、开源(github地址)的进程监控管理工具。 Supervisor稳定、简单、高效、可扩展、兼容性好，可以在大部分类Unix系统(Debian、Solaris、Mac OS、FreeBSD等)上使用(不支持Windows，可用NSSN替代)。 Supervisor可以很方便的管理批量进程，不仅支持启动、重启、">
+<meta name="keywords" content="Supervisor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Supervisor 入门教程">
+<meta property="og:url" content="https://blog.pandll.com/article/be57/index.html">
+<meta property="og:site_name" content="Wayde&#39;s Blog">
+<meta property="og:description" content="Superviosr 介绍Supervisor是一款用采用Client/Server架构、开源(github地址)的进程监控管理工具。 Supervisor稳定、简单、高效、可扩展、兼容性好，可以在大部分类Unix系统(Debian、Solaris、Mac OS、FreeBSD等)上使用(不支持Windows，可用NSSN替代)。 Supervisor可以很方便的管理批量进程，不仅支持启动、重启、">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog.pandll.com/resource/images/supervisor-web-01.png">
+<meta property="og:updated_time" content="2021-03-07T15:05:14.721Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Supervisor 入门教程">
+<meta name="twitter:description" content="Superviosr 介绍Supervisor是一款用采用Client/Server架构、开源(github地址)的进程监控管理工具。 Supervisor稳定、简单、高效、可扩展、兼容性好，可以在大部分类Unix系统(Debian、Solaris、Mac OS、FreeBSD等)上使用(不支持Windows，可用NSSN替代)。 Supervisor可以很方便的管理批量进程，不仅支持启动、重启、">
+<meta name="twitter:image" content="https://blog.pandll.com/resource/images/supervisor-web-01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.pandll.com/article/be57/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/css/tomorrow-night.min.css" media="screen" type="text/css">
+
+  <title>Supervisor 入门教程 | Wayde's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?54fab7a8d86da470f69ae88485845c02";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<script src="/js/prettify.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+ $('pre').addClass('prettyprint linenums');
+   prettyPrint();
+ })
+</script>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wayde's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">知识源于积累</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-collection">
+          <a href="/collection/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            个人收藏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.pandll.com/article/be57/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wayde">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/resource/images/my_avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wayde's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Supervisor 入门教程</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-25T13:02:00+08:00">
+                2018-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Other/" itemprop="url" rel="index">
+                    <span itemprop="name">Other</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">浏览量:
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3><span id="superviosr-介绍">Superviosr 介绍</span></h3><p><strong><a href="http://supervisord.org/" target="_blank" rel="noopener">Supervisor</a></strong>是一款用采用Client/Server架构、开源(<a href="https://github.com/Supervisor/supervisor" target="_blank" rel="noopener">github地址</a>)的进程监控管理工具。</p>
+<p>Supervisor稳定、简单、高效、可扩展、兼容性好，可以在大部分类Unix系统(Debian、Solaris、Mac OS、FreeBSD等)上使用(不支持Windows，可用<a href="/article/4689/">NSSN</a>替代)。</p>
+<p>Supervisor可以很方便的管理批量进程，不仅支持启动、重启、关闭、重载，还支持监控进程，进程意外僵死后可自动拉起。</p>
+<p>Supervisor虽然是用Python开发，但是可以用来管理任意进程，而不仅仅是Python进程。</p>
+<p>Supervisor目前最新版本3.3.4，暂不支持Python 3，不过即将推出的4.0版本将会支持Python3.4+。</p>
+<p>Supervisor由以下4部分组成:</p>
+<ul>
+<li><p><strong>supervisord</strong></p>
+<p><em>supervisord</em>是supervisor的后台服务。它负责启动supervisor管理的子进程、响应来自client的请求、重启闪退或异常退出的子进程、把子进程的stderr或stdout记录到日志文件中、生成和处理Event等。</p>
+</li>
+<li><p><strong>supervisorctl</strong></p>
+<p><em>supervisorctl</em>相当于supervisor的客户端。它有一个类shell的命令行界面，可以通过命令查看、启动、停止、重启子进程，supervisorctl不仅可以通过UNIX socket连接本机的supervisord管理进程，还可以通过TCP socket连接远程的supervisord管理进程。supervisorctl和supervisord之间的通信，是通过xml_rpc完成的，相应的配置在[supervisorctl]块里面。</p>
+</li>
+<li><p><strong>Web Server</strong></p>
+<p><em>Web Server</em>主要可以在界面上管理进程，Web Server其实是通过XML_RPC来实现的，可以向supervisor请求数据，也可以控制supervisor及子进程。配置在[inet_http_server]块里面。</p>
+</li>
+<li><p><strong>XML-RPC Interface</strong></p>
+<p>supervisorctl和Web Server通过<code>XML-RPC接口</code>调用<code>supervisord</code>，实现进程的管理。当然你也可以在你自己的服务里调用这些XML-RPC接口，来管理子进程。</p>
+</li>
+</ul>
+<a id="more"></a>
+<h3><span id="supervisor-安装">Supervisor 安装</span></h3><h4><span id="通过源码安装">通过源码安装</span></h4><p><code>$ git clone https://github.com/Supervisor/supervisor.git</code></p>
+<p><code>$ python setup.py install</code></p>
+<h4><span id="通过pip安装">通过pip安装</span></h4><p><code>$ pip install supervisor</code></p>
+<h4><span id="通过apt-get安装">通过apt-get安装</span></h4><p>在Ubuntu上，可以直接运行<code>apt-get install supervisor</code>安装</p>
+<h4><span id="通过easy_install安装">通过easy_install安装</span></h4><p><code>$ easy_install supervisor</code></p>
+<p><em>easy_install 是一个基于setuptools的工具，帮助我们自动下载、编译、安装和管理python packages。</em></p>
+<p><em>pip是easy_install的改进版，平常用pip就可以了，但还有老版本的Python只有easy_install。</em></p>
+<h3><span id="supervisor-配置">Supervisor 配置</span></h3><p>Supervisor的配置文件采用的Windows INI格式，推荐命名为<code>supervisord.conf</code>，<code>supervisord</code>和<code>supervisorctl</code>都会用到这个配置文件。Supervisor启动时可以通过<code>-c</code>参数指定配置文件，如果没有指定，supervisor则会在以下路径依次寻找<code>supervisord.conf</code>，直到读取到supervisord.conf。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">CWD/supervisord.conf				<span class="comment"># $CWD表示运行supervisord程序的目录</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash">CWD/etc/supervisord.conf			<span class="comment"># $CWD表示运行supervisord程序的目录</span></span></span><br><span class="line">/etc/supervisord.conf</span><br><span class="line">/etc/supervisor/supervisord.conf 	# Supervisor3.3.0新加</span><br><span class="line">../etc/supervisord.conf 			# 相对脚本执行的路径</span><br><span class="line">../supervisord.conf 				# 相对脚本执行的路径</span><br></pre></td></tr></table></figure>
+<p>安装完毕后，可以通过<code>echo_supervisord_conf</code>生成一份默认初始配置文件。<br><code>$ echo_supervisord_conf &gt; your_path/supervisord.conf</code></p>
+<p><code>supervisord.conf</code>主要由以下9个部分组成。其中常用的为前面6个部分，后面3个很少用到。</p>
+<h4><span id="unixinet_http_server">[unix|inet]_http_server</span></h4><p>supervisorctl通过unix socket或tcp socket与supervisord通信，Web Server通过tcp与supervisord通信。<code>unix_http_server</code>和<code>inet_http_server</code>两者必须配置一个，否则无法管理supervisord。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[unix_http_server]</span></span><br><span class="line"><span class="attr">file</span>=/tmp/supervisor.sock   ; unix socket文件路径</span><br><span class="line"><span class="comment">;chmod=0700                 ; unix socket文件的mode，默认是0700</span></span><br><span class="line"><span class="comment">;chown=nobody:nogroup       ; unix socket文件的owner，格式：uid:gid,默认为启动supervisord进程的用户及属组</span></span><br><span class="line"><span class="comment">;username=user              ; supervisorctl连接时认证的用户，默认为不需要用户</span></span><br><span class="line"><span class="comment">;password=123               ; 和上面的用户名对应的密码，可以直接使用明码，也可以使用SHA加密，如：&#123;SHA&#125;82ab876d1387bfafe46cc1c8a2ef074eae50cb1d</span></span><br><span class="line"></span><br><span class="line"><span class="section">[inet_http_server]</span></span><br><span class="line"><span class="comment">;port=127.0.0.1:9001        ; tcp监听地址和端口</span></span><br><span class="line"><span class="comment">;username=user              ; supervisorctl和web server连接时认证的用户,默认无需用户名</span></span><br><span class="line"><span class="comment">;password=123               ; 和上面的用户名对应的密码，可以直接使用明码，也可以使用SHA加密，如：&#123;SHA&#125;82ab876d1387bfafe46cc1c8a2ef074eae50cb1d</span></span><br></pre></td></tr></table></figure>
+<h4><span id="supervisord">supervisord</span></h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[supervisord]</span></span><br><span class="line"><span class="attr">logfile</span>=/tmp/supervisord.log ; supervisord主进程日志文件路径,默认是<span class="variable">$CWD</span>/supervisord.log</span><br><span class="line"><span class="attr">logfile_maxbytes</span>=<span class="number">50</span>MB        ; supervisord主进程日志文件大小，超出会rotate，默认 <span class="number">50</span>MB，如果设成<span class="number">0</span>，表示不限制大小</span><br><span class="line"><span class="attr">logfile_backups</span>=<span class="number">10</span>           ; supervisord主进程日志文件保留备份数量默认<span class="number">10</span>，设为<span class="number">0</span>表示不备份</span><br><span class="line"><span class="attr">loglevel</span>=info                ; 日志级别，默认info，其它: debug,warn,trace</span><br><span class="line"><span class="attr">pidfile</span>=/tmp/supervisord.pid ; supervisord主进程的pid文件路径,默认名为supervisord.pid</span><br><span class="line"><span class="attr">nodaemon</span>=<span class="literal">false</span>               ; supervisord主进程是否在前台启动，默认是<span class="literal">false</span>，即以 daemon 的方式启动</span><br><span class="line"><span class="attr">minfds</span>=<span class="number">1024</span>                  ; supervisord主进程可以打开的文件描述符的最小值，默认 <span class="number">1024</span></span><br><span class="line"><span class="attr">minprocs</span>=<span class="number">200</span>                 ; supervisord主进程可以打开的进程数的最小值，默认 <span class="number">200</span></span><br><span class="line"><span class="comment">;umask=022                   ; supervisord主进程创建文件的掩码,默认为022</span></span><br><span class="line"><span class="comment">;user=chrism                 ; 这个参数可以设置一个非root用户，当我们以root用户启动supervisord之后。这里面设置的这个用户，也可以对supervisord进行管理</span></span><br><span class="line"><span class="comment">;identifier=supervisor       ; 这个参数是supervisord的标识符，主要是给XML_RPC用的。当你有多supervisor的时候，而且想调用XML_RPC统一管理，就需要为每个supervisor设置不同的标识符了，默认是supervisord</span></span><br><span class="line"><span class="comment">;directory=/tmp              ; 这个参数是当supervisord作为守护进程运行的时候，设置这个参数的话，启动supervisord进程之前，会先切换到这个目录</span></span><br><span class="line"><span class="comment">;nocleanup=true              ; 这个参数当为false的时候，会在supervisord进程启动的时候，把以前子进程产生的日志文件(路径为AUTO的情况下)清除掉。有时候需要查看历史日志，可以设置为true</span></span><br><span class="line"><span class="comment">;childlogdir=/tmp            ; 当子进程日志路径为AUTO的时候，子进程日志文件的存放路径。默认路径是这个东西，执行下面的这个命令看看就OK了，python -c "import tempfile;print tempfile.gettempdir()"</span></span><br><span class="line"><span class="comment">;environment=KEY="value"     ; 这个是用来设置环境变量的，supervisord在linux中启动默认继承了linux的环境变量，在这里可以设置supervisord进程特有的其他环境变量。supervisord启动子进程时，子进程会拷贝父进程的内存空间内容。 所以设置的这些环境变量也会被子进程继承。小例子：environment=name="haha",age="hehe"</span></span><br><span class="line"><span class="comment">;strip_ansi=false            ; 这个选项如果设置为true，会清除子进程日志中的所有ANSI 序列。什么是ANSI序列呢？就是我们的\n,\t这些东西</span></span><br></pre></td></tr></table></figure>
+<p>supervisord的配置也可以不写入配置文件，可在启动supervisord时当参数传入，如下所示。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> supervisord -h</span></span><br><span class="line">supervisord -- run a set of applications as daemons.</span><br><span class="line"></span><br><span class="line">Usage: /usr/local/bin/supervisord [options]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">-c/--configuration FILENAME -- configuration file path (searches if not given)</span><br><span class="line">-n/--nodaemon -- run in the foreground (same as 'nodaemon=true' in config file)</span><br><span class="line">-h/--help -- print this usage message and exit</span><br><span class="line">-v/--version -- print supervisord version number and exit</span><br><span class="line">-u/--user USER -- run supervisord as this user (or numeric uid)</span><br><span class="line">-m/--umask UMASK -- use this umask for daemon subprocess (default is 022)</span><br><span class="line">-d/--directory DIRECTORY -- directory to chdir to when daemonized</span><br><span class="line">-l/--logfile FILENAME -- use FILENAME as logfile path</span><br><span class="line">-y/--logfile_maxbytes BYTES -- use BYTES to limit the max size of logfile</span><br><span class="line">-z/--logfile_backups NUM -- number of backups to keep when max bytes reached</span><br><span class="line">-e/--loglevel LEVEL -- use LEVEL as log level (debug,info,warn,error,critical)</span><br><span class="line">-j/--pidfile FILENAME -- write a pid file for the daemon process to FILENAME</span><br><span class="line">-i/--identifier STR -- identifier used for this instance of supervisord</span><br><span class="line">-q/--childlogdir DIRECTORY -- the log directory for child process logs</span><br><span class="line">-k/--nocleanup --  prevent the process from performing cleanup (removal of</span><br><span class="line">                   old automatic child log files) at startup.</span><br><span class="line">-a/--minfds NUM -- the minimum number of file descriptors for start success</span><br><span class="line">-t/--strip_ansi -- strip ansi escape codes from process output</span><br><span class="line">--minprocs NUM  -- the minimum number of processes available for start success</span><br><span class="line">--profile_options OPTIONS -- run supervisord under profiler and output</span><br><span class="line">                             results based on OPTIONS, which  is a comma-sep'd</span><br><span class="line">                             list of 'cumulative', 'calls', and/or 'callers',</span><br><span class="line">                             e.g. 'cumulative,callers')</span><br></pre></td></tr></table></figure>
+<h4><span id="supervisorctl">supervisorctl</span></h4><p>当你使用unix socket与supervisord通信时，serverurl配置<code>unix://path/supervisor.sock</code>。当你使用tcp socket与supervisord通信时，serverurl配置<code>http://ip:port</code>。</p>
+<p>如果[unix|inet]_http_server中有设置username和password，此处不配置的话，则通过<code>supervisorctl</code>管理时需要显式传入username 和 password。如果你不希望别人查看管理你的program，这种方式就有用了。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[supervisorctl]</span></span><br><span class="line"><span class="attr">serverurl</span>=unix:///tmp/supervisor.sock ; unix socket文件路径</span><br><span class="line"><span class="comment">;serverurl=http://127.0.0.1:9001 	  ; tcp socket监听的ip:port</span></span><br><span class="line"><span class="comment">;username=chris              ; 如果设置则必须与[unix|inet]_http_server中的username一致</span></span><br><span class="line"><span class="comment">;password=123                ; 如果设置则必须与[unix|inet]_http_server中的username一致</span></span><br><span class="line"><span class="comment">;prompt=mysupervisor         ; cmd line prompt (default "supervisor")</span></span><br><span class="line"><span class="comment">;history_file=~/.sc_history  ; use readline history if available</span></span><br></pre></td></tr></table></figure>
+<p>supervisorctl的配置也可以不写入配置文件，可在启动supervisorctl时当参数传入，如下所示。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> supervisorctl -h</span></span><br><span class="line">supervisorctl -- control applications run by supervisord from the cmd line.</span><br><span class="line"></span><br><span class="line">Usage: /usr/local/bin/supervisorctl [options] [action [arguments]]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">-c/--configuration FILENAME -- configuration file path (searches if not given)</span><br><span class="line">-h/--help -- print usage message and exit</span><br><span class="line">-i/--interactive -- start an interactive shell after executing commands</span><br><span class="line">-s/--serverurl URL -- URL on which supervisord server is listening</span><br><span class="line">     (default "http://localhost:9001").</span><br><span class="line">-u/--username USERNAME -- username to use for authentication with server</span><br><span class="line">-p/--password PASSWORD -- password to use for authentication with server</span><br><span class="line">-r/--history-file -- keep a readline history (if readline is available)</span><br><span class="line"></span><br><span class="line">action [arguments] -- see below</span><br><span class="line"></span><br><span class="line">Actions are commands like "tail" or "stop".  If -i is specified or no action is</span><br><span class="line">specified on the command line, a "shell" interpreting actions typed</span><br><span class="line">interactively is started.  Use the action "help" to find out about available</span><br><span class="line">actions.</span><br></pre></td></tr></table></figure>
+<h4><span id="program">program</span></h4><p>应用程序配置信息，<code>x</code>是应用程序的唯一标识，不能重复。后续对该程序的所有操作(start, restart等)都通过该名字来实现。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">;[program:x]</span></span><br><span class="line"><span class="comment">;command=/bin/cat              ; program的运行命令,支持相对路径,可以带参数</span></span><br><span class="line"><span class="comment">;process_name=%(program_name)s ; 进程名称,默认是%(program_name)s,如果numprocs大于1,则必须将”%(process_num)s”变量放入”process_name”中，防止多个进程同名导致启动出错</span></span><br><span class="line"><span class="comment">;numprocs=1                    ; 同时启动的进程个数,用来实现并发,默认是1</span></span><br><span class="line"><span class="comment">;directory=/tmp                ; 如果配置了这个目录,那program运行前,会先切换到这个目录</span></span><br><span class="line"><span class="comment">;umask=022                     ; umask for process (default None)</span></span><br><span class="line"><span class="comment">;priority=999                  ; program进程优先级,决定了启动和关闭program进程的顺序,默认是最大值999</span></span><br><span class="line"><span class="comment">;autostart=true                ; 启动supervisord时,program进程是否自动启动,默认是true</span></span><br><span class="line"><span class="comment">;startsecs=1                   ; 启动10秒后没有异常退出，就表示进程正常启动了，默认为1秒</span></span><br><span class="line"><span class="comment">;startretries=3                ; 启动失败自动重试次数，默认是3</span></span><br><span class="line"><span class="comment">;autorestart=unexpected        ; 程序退出后自动重启,可选值：[unexpected,true,false]，默认为unexpected，表示进程意外杀死后才重启</span></span><br><span class="line"><span class="comment">;exitcodes=0,2                 ; 'expected' exit codes used with autorestart (default 0,2)</span></span><br><span class="line"><span class="comment">;stopsignal=QUIT               ; signal used to kill process (default TERM)</span></span><br><span class="line"><span class="comment">;stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)</span></span><br><span class="line"><span class="comment">;stopasgroup=false             ; 进程被杀死时，是否向这个进程组发送stop信号，包括program子进程,默认false</span></span><br><span class="line"><span class="comment">;killasgroup=false             ; 向进程组发送kill信号，包括program子进程,默认false</span></span><br><span class="line"><span class="comment">;user=chrism                   ; 运行program进程的用户,默认同supervisord服务的启动用户。如果supervisord由root启动,而你又不想给program进程root,你可以配置这个参数</span></span><br><span class="line"><span class="comment">;redirect_stderr=true          ; 把stderr重定向到stdout，默认false</span></span><br><span class="line"><span class="comment">;stdout_logfile=/a/path        ; 由于program进程由supervisord启动，所以其stdout将无法输出到系统的标准输出上，所以你要将program进程的stdout写入到日志文件中。这个参数指定了该日志文件的位置,默认是 $CWD/supervisord.log。(需要注意当指定目录不存在时无法正常启动，所以需要手动创建目录)</span></span><br><span class="line"><span class="comment">;stdout_logfile_maxbytes=1MB   ; 日志文件大小，超出会rotate，默认 50MB，如果设成0，表示不限制大小</span></span><br><span class="line"><span class="comment">;stdout_logfile_backups=10     ; 日志文件保留备份数量默认10，设为0表示不备份</span></span><br><span class="line"><span class="comment">;stdout_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)</span></span><br><span class="line"><span class="comment">;stdout_events_enabled=false   ; emit events on stdout writes (default false)</span></span><br><span class="line"><span class="comment">;stderr_logfile=/a/path        ; 同stdout_logfile，这里指定了stderr写入的日志文件位置</span></span><br><span class="line"><span class="comment">;stderr_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)</span></span><br><span class="line"><span class="comment">;stderr_logfile_backups=10     ; # of stderr logfile backups (0 means none, default 10)</span></span><br><span class="line"><span class="comment">;stderr_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)</span></span><br><span class="line"><span class="comment">;stderr_events_enabled=false   ; emit events on stderr writes (default false)</span></span><br><span class="line"><span class="comment">;environment=A="1",B="2"       ; 通过 environment 来添加需要的环境变量，一种常见的用法是修改 PYTHONPATH</span></span><br><span class="line"><span class="comment">;serverurl=AUTO                ; override serverurl computation (childutils)</span></span><br></pre></td></tr></table></figure>
+<h4><span id="include">include</span></h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[include]</span></span><br><span class="line"><span class="comment">;files = relative/directory/*.ini	; 可以指定一个或多个以.ini结束的配置文件</span></span><br></pre></td></tr></table></figure>
+<h4><span id="group">group</span></h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[group:x]</span></span><br><span class="line"><span class="comment">;programs=progname1,progname2  ; each refers to 'x' in [program:x] definitions</span></span><br><span class="line"><span class="comment">;priority=999                  ; the relative start priority (default 999)</span></span><br></pre></td></tr></table></figure>
+<h4><span id="rpcinerface">rpcinerface</span></h4><p>这个选项是给XML_RPC用的，当然你如果想使用supervisord或者web server 这个选项必须要开启的</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[rpcinterface:supervisor]</span></span><br><span class="line">supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface</span><br></pre></td></tr></table></figure>
+<h4><span id="fcgi-program">fcgi-program</span></h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">;[fcgi-program:x]</span></span><br><span class="line"><span class="comment">;command=/bin/cat              ; program的运行命令,支持相对路径,可以带参数</span></span><br><span class="line"><span class="comment">;socket=unix:///var/run/supervisor/%(program_name)s.sock</span></span><br><span class="line"><span class="comment">;socket=tcp://localhost:9002</span></span><br><span class="line"><span class="comment">;socket_owner=user:group</span></span><br><span class="line"><span class="comment">;socket_mode=0700</span></span><br><span class="line"><span class="comment">;process_name=%(program_name)s ; 进程名称,默认是%(program_name)s,如果numprocs大于1,则必须将”%(process_num)s”变量放入”process_name”中，防止多个进程同名导致启动出错</span></span><br><span class="line"><span class="comment">;numprocs=1                    ; 同时启动的进程个数,用来实现并发,默认是1</span></span><br><span class="line"><span class="comment">;directory=/tmp                ; 如果配置了这个目录,那program运行前,会先切换到这个目录</span></span><br><span class="line"><span class="comment">;umask=022                     ; umask for process (default None)</span></span><br><span class="line"><span class="comment">;priority=999                  ; program进程优先级,决定了启动和关闭program进程的顺序,默认是最大值999</span></span><br><span class="line"><span class="comment">;autostart=true                ; 启动supervisord时,program进程是否自动启动,默认是true</span></span><br><span class="line"><span class="comment">;startsecs=1                   ; 启动10秒后没有异常退出，就表示进程正常启动了，默认为1秒</span></span><br><span class="line"><span class="comment">;startretries=3                ; 启动失败自动重试次数，默认是3</span></span><br><span class="line"><span class="comment">;autorestart=unexpected        ; 程序退出后自动重启,可选值：[unexpected,true,false]，默认为unexpected，表示进程意外杀死后才重启</span></span><br><span class="line"><span class="comment">;exitcodes=0,2                 ; 'expected' exit codes used with autorestart (default 0,2)</span></span><br><span class="line"><span class="comment">;stopsignal=QUIT               ; signal used to kill process (default TERM)</span></span><br><span class="line"><span class="comment">;stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)</span></span><br><span class="line"><span class="comment">;stopasgroup=false             ; 进程被杀死时，是否向这个进程组发送stop信号，包括program子进程,默认false</span></span><br><span class="line"><span class="comment">;killasgroup=false             ; 向进程组发送kill信号，包括program子进程,默认false</span></span><br><span class="line"><span class="comment">;user=chrism                   ; 运行program进程的用户,默认同supervisord服务的启动用户。如果supervisord由root启动,而你又不想给program进程root,你可以配置这个参数</span></span><br><span class="line"><span class="comment">;redirect_stderr=true          ; 把stderr重定向到stdout，默认false</span></span><br><span class="line"><span class="comment">;stdout_logfile=/a/path        ; 由于program进程由supervisord启动，所以其stdout将无法输出到系统的标准输出上，所以你要将program进程的stdout写入到日志文件中。这个参数指定了该日志文件的位置,默认是 $CWD/supervisord.log。(需要注意当指定目录不存在时无法正常启动，所以需要手动创建目录)</span></span><br><span class="line"><span class="comment">;stdout_logfile_maxbytes=1MB   ; 日志文件大小，超出会rotate，默认 50MB，如果设成0，表示不限制大小</span></span><br><span class="line"><span class="comment">;stdout_logfile_backups=10     ; 日志文件保留备份数量默认10，设为0表示不备份</span></span><br><span class="line"><span class="comment">;stdout_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)</span></span><br><span class="line"><span class="comment">;stdout_events_enabled=false   ; emit events on stdout writes (default false)</span></span><br><span class="line"><span class="comment">;stderr_logfile=/a/path        ; 同stdout_logfile，这里指定了stderr写入的日志文件位置</span></span><br><span class="line"><span class="comment">;stderr_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)</span></span><br><span class="line"><span class="comment">;stderr_logfile_backups=10     ; # of stderr logfile backups (0 means none, default 10)</span></span><br><span class="line"><span class="comment">;stderr_capture_maxbytes=1MB   ; number of bytes in 'capturemode' (default 0)</span></span><br><span class="line"><span class="comment">;stderr_events_enabled=false   ; emit events on stderr writes (default false)</span></span><br><span class="line"><span class="comment">;environment=A="1",B="2"       ; 通过 environment 来添加需要的环境变量，一种常见的用法是修改 PYTHONPATH</span></span><br><span class="line"><span class="comment">;serverurl=AUTO                ; override serverurl computation (childutils)</span></span><br></pre></td></tr></table></figure>
+<h4><span id="eventlistenner">eventlistenner</span></h4><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">;[eventlistenner:x]</span></span><br><span class="line"><span class="comment">;command=/bin/eventlistener    ; the program (relative uses PATH, can take args)</span></span><br><span class="line"><span class="comment">;process_name=%(program_name)s ; process_name expr (default %(program_name)s)</span></span><br><span class="line"><span class="comment">;numprocs=1                    ; number of processes copies to start (def 1)</span></span><br><span class="line"><span class="comment">;events=EVENT                  ; event notif. types to subscribe to (req\'d)</span></span><br><span class="line"><span class="comment">;buffer_size=10                ; event buffer queue size (default 10)</span></span><br><span class="line"><span class="comment">;directory=/tmp                ; directory to cwd to before exec (def no cwd)</span></span><br><span class="line"><span class="comment">;umask=022                     ; umask for process (default None)</span></span><br><span class="line"><span class="comment">;priority=-1                   ; the relative start priority (default -1)</span></span><br><span class="line"><span class="comment">;autostart=true                ; start at supervisord start (default: true)</span></span><br><span class="line"><span class="comment">;startsecs=1                   ; # of secs prog must stay up to be running (def. 1)</span></span><br><span class="line"><span class="comment">;startretries=3                ; max # of serial start failures when starting (default 3)</span></span><br><span class="line"><span class="comment">;autorestart=unexpected        ; autorestart if exited after running (def: unexpected)</span></span><br><span class="line"><span class="comment">;exitcodes=0,2                 ; 'expected' exit codes used with autorestart (default 0,2)</span></span><br><span class="line"><span class="comment">;stopsignal=QUIT               ; signal used to kill process (default TERM)</span></span><br><span class="line"><span class="comment">;stopwaitsecs=10               ; max num secs to wait b4 SIGKILL (default 10)</span></span><br><span class="line"><span class="comment">;stopasgroup=false             ; send stop signal to the UNIX process group (default false)</span></span><br><span class="line"><span class="comment">;killasgroup=false             ; SIGKILL the UNIX process group (def false)</span></span><br><span class="line"><span class="comment">;user=chrism                   ; setuid to this UNIX account to run the program</span></span><br><span class="line"><span class="comment">;redirect_stderr=false         ; redirect_stderr=true is not allowed for eventlisteners</span></span><br><span class="line"><span class="comment">;stdout_logfile=/a/path        ; stdout log path, NONE for none; default AUTO</span></span><br><span class="line"><span class="comment">;stdout_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)</span></span><br><span class="line"><span class="comment">;stdout_logfile_backups=10     ; # of stdout logfile backups (0 means none, default 10)</span></span><br><span class="line"><span class="comment">;stdout_events_enabled=false   ; emit events on stdout writes (default false)</span></span><br><span class="line"><span class="comment">;stderr_logfile=/a/path        ; stderr log path, NONE for none; default AUTO</span></span><br><span class="line"><span class="comment">;stderr_logfile_maxbytes=1MB   ; max # logfile bytes b4 rotation (default 50MB)</span></span><br><span class="line"><span class="comment">;stderr_logfile_backups=10     ; # of stderr logfile backups (0 means none, default 10)</span></span><br><span class="line"><span class="comment">;stderr_events_enabled=false   ; emit events on stderr writes (default false)</span></span><br><span class="line"><span class="comment">;environment=A="1",B="2"       ; process environment additions</span></span><br><span class="line"><span class="comment">;serverurl=AUTO                ; override serverurl computation (childutils)</span></span><br></pre></td></tr></table></figure>
+<h3><span id="supervisor-命令">Supervisor 命令</span></h3><ul>
+<li><p>启动supervisor服务</p>
+<p><code>$ install_path/supervisord -c supervisord.conf</code></p>
+<p><em>如果是<code>apt-get</code>安装，可通过<code>service supervisor start</code>启动</em></p>
+</li>
+<li><p>停止supervisor服务</p>
+<p><code>$ supervisorctl [-c supervisord.conf] shutdown</code></p>
+<p><em>如果是<code>apt-get</code>安装，可通过<code>service supervisor stop</code>停止</em></p>
+</li>
+<li><p>查看supervisor管理的program列表及状态</p>
+<p><code>$ supervisorctl [-c supervisord.conf] status</code></p>
+</li>
+<li><p>管理单个或多个进程</p>
+<p><code>$ supervisorctl [-c supervisord.conf] [start|status|stop|restart] program_name_1 [program_name_n...]</code></p>
+</li>
+<li><p>管理进程组</p>
+<p><code>$ supervisorctl [-c supervisord.conf] [start|status|stop|restart] groupworker:group_name</code></p>
+</li>
+<li><p>启动新配置的program、重启配置有改动的program</p>
+<p><code>$ supervisorctl [-c supervisord.conf] update</code></p>
+</li>
+<li><p>停止<strong>原所有进程</strong>，并按新的配置启动program</p>
+<p><code>$ supervisorctl [-c supervisord.conf] reload</code></p>
+</li>
+<li><p>停止所有program</p>
+<p><code>$ supervisorctl [-c supervisord.conf] stop all</code></p>
+</li>
+<li><p>进入supervisorctl交互式环境</p>
+<p><code>$supervisorctl [-c supervisord.conf]</code></p>
+</li>
+</ul>
+<h3><span id="说明">说明</span></h3><ol>
+<li><p>Supervisor 只能管理在前台运行的程序，所以如果应用程序有后台运行的选项，需要关闭。</p>
+</li>
+<li><p>如果program还有子进程，为确保所有program子进程都能正确停止，[program:x]下的<code>stopasgroup</code>和<code>killasgroup</code>都必须设置为true，否则program子进程就可能变成僵尸进程。</p>
+</li>
+<li><p>按照官方文档的定义，一个 [program:x] 实际上是表示一组相同特征或同类的进程组，也就是说一个 [program:x] 可以启动<em>多个进程</em>。这组进程的成员是通过 <code>numprocs</code> 和 <code>process_name</code> 这两个参数来确定的。</p>
+</li>
+<li><p>Supervisor 同时还提供了另外一种进程组的管理方式，通过这种方式，可以使用 supervisorctl 命令来管理一组进程。跟 [program:x] 的进程组不同的是，这里的进程是一个个的 [program:x] 。</p>
+</li>
+<li><p>Supervisor的Web Server界面长这样</p>
+<p><img src="../../resource/images/supervisor-web-01.png" alt="supervisor web页面"></p>
+</li>
+</ol>
+<p>参考资料:<br><a href="http://www.bjhee.com/supervisor.html" target="_blank" rel="noopener">Linux上的后台进程管理工具Supervisor</a><br><a href="http://blog.51cto.com/lixcto/1539136" target="_blank" rel="noopener">supervisor(一)基础篇</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Supervisor/" rel="tag"># Supervisor</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/958d/" rel="next" title="Windows 常用命令(类比Linux)">
+                <i class="fa fa-chevron-left"></i> Windows 常用命令(类比Linux)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/abd5/" rel="prev" title="Nginx 常用命令和配置">
+                Nginx 常用命令和配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjM5OS84OTYw"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/resource/images/my_avatar.jpg"
+                alt="Wayde" />
+            
+              <p class="site-author-name" itemprop="name">Wayde</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">140</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">112</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Wayde2014" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/8013174/pandllcom" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://instagram.com/wayde2015" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text"><span id="superviosr-&#x4ECB;&#x7ECD;">Superviosr &#x4ECB;&#x7ECD;</span></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text"><span id="supervisor-&#x5B89;&#x88C5;">Supervisor &#x5B89;&#x88C5;</span></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.1.</span> <span class="nav-text"><span id="&#x901A;&#x8FC7;&#x6E90;&#x7801;&#x5B89;&#x88C5;">&#x901A;&#x8FC7;&#x6E90;&#x7801;&#x5B89;&#x88C5;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.2.</span> <span class="nav-text"><span id="&#x901A;&#x8FC7;pip&#x5B89;&#x88C5;">&#x901A;&#x8FC7;pip&#x5B89;&#x88C5;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.3.</span> <span class="nav-text"><span id="&#x901A;&#x8FC7;apt-get&#x5B89;&#x88C5;">&#x901A;&#x8FC7;apt-get&#x5B89;&#x88C5;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">2.4.</span> <span class="nav-text"><span id="&#x901A;&#x8FC7;easy_install&#x5B89;&#x88C5;">&#x901A;&#x8FC7;easy_install&#x5B89;&#x88C5;</span></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text"><span id="supervisor-&#x914D;&#x7F6E;">Supervisor &#x914D;&#x7F6E;</span></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.1.</span> <span class="nav-text"><span id="unixinet_http_server">[unix|inet]_http_server</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.</span> <span class="nav-text"><span id="supervisord">supervisord</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.</span> <span class="nav-text"><span id="supervisorctl">supervisorctl</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.4.</span> <span class="nav-text"><span id="program">program</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.5.</span> <span class="nav-text"><span id="include">include</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.6.</span> <span class="nav-text"><span id="group">group</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.7.</span> <span class="nav-text"><span id="rpcinerface">rpcinerface</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.8.</span> <span class="nav-text"><span id="fcgi-program">fcgi-program</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.9.</span> <span class="nav-text"><span id="eventlistenner">eventlistenner</span></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text"><span id="supervisor-&#x547D;&#x4EE4;">Supervisor &#x547D;&#x4EE4;</span></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text"><span id="&#x8BF4;&#x660E;">&#x8BF4;&#x660E;</span></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<!-- Default Statcounter code for blog.pandll.com
+https://blog.pandll.com -->
+<script type="text/javascript">
+var sc_project=8761787;
+var sc_invisible=1;
+var sc_security="83c65835";
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics"
+href="http://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="//c.statcounter.com/8761787/0/83c65835/1/" alt="Web
+Analytics"></a></div></noscript>
+<!-- End of Statcounter Code -->
+
+<div class="copyright">&copy; 2012&ndash;<span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wayde</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom"><a href="https://beian.miit.gov.cn">粤ICP备2020135844号</a><script type="text/javascript">var sc_project=8761787;var sc_invisible=1;var sc_security="83c65835";</script><script type="text/javascript" src="https://www.statcounter.com/counter/counter.js"async></script><noscript><div class="statcounter"><a title="web statistics"href="https://statcounter.com/" target="_blank"><imgclass="statcounter"src="https://c.statcounter.com/8761787/0/83c65835/1/"alt="web statistics"referrerPolicy="no-referrer-when-downgrade"></a></div></noscript></div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

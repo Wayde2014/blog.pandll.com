@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/pandll_180.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/pandll_32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/pandll_16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/pandll_512.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,pip,pyenv,virtualenv,PyPi,virtualenvwrapper,virtualenvwrapper-win," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="pippip是一个Python语言开发的命令行程序，用来安装、管理Python Package。 常用命令有:  显示已安装Package列表 pip list 安装最新版本Package pip install package_name 安装指定版本Package pip install package_name==3.2.0 安装不低于某个版本的Package  pip install &amp;#3">
+<meta name="keywords" content="Python,pip,pyenv,virtualenv,PyPi,virtualenvwrapper,virtualenvwrapper-win">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python工具 pip、pyenv、virtualenv、virtualenvwrapper等介绍">
+<meta property="og:url" content="https://blog.pandll.com/article/b874/index.html">
+<meta property="og:site_name" content="Wayde&#39;s Blog">
+<meta property="og:description" content="pippip是一个Python语言开发的命令行程序，用来安装、管理Python Package。 常用命令有:  显示已安装Package列表 pip list 安装最新版本Package pip install package_name 安装指定版本Package pip install package_name==3.2.0 安装不低于某个版本的Package  pip install &amp;#3">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-03-07T15:05:14.725Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python工具 pip、pyenv、virtualenv、virtualenvwrapper等介绍">
+<meta name="twitter:description" content="pippip是一个Python语言开发的命令行程序，用来安装、管理Python Package。 常用命令有:  显示已安装Package列表 pip list 安装最新版本Package pip install package_name 安装指定版本Package pip install package_name==3.2.0 安装不低于某个版本的Package  pip install &amp;#3">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.pandll.com/article/b874/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/css/tomorrow-night.min.css" media="screen" type="text/css">
+
+  <title>Python工具 pip、pyenv、virtualenv、virtualenvwrapper等介绍 | Wayde's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?54fab7a8d86da470f69ae88485845c02";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<script src="/js/prettify.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+ $('pre').addClass('prettyprint linenums');
+   prettyPrint();
+ })
+</script>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wayde's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">知识源于积累</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-collection">
+          <a href="/collection/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            个人收藏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.pandll.com/article/b874/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wayde">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/resource/images/my_avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wayde's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Python工具 pip、pyenv、virtualenv、virtualenvwrapper等介绍</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-19T13:02:00+08:00">
+                2018-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">浏览量:
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3><span id="pip">pip</span></h3><p><code>pip</code>是一个<code>Python</code>语言开发的命令行程序，用来安装、管理<code>Python Package</code>。</p>
+<p>常用命令有:</p>
+<ol>
+<li>显示已安装<code>Package</code>列表 <code>pip list</code></li>
+<li>安装最新版本<code>Package</code> <code>pip install package_name</code></li>
+<li>安装指定版本<code>Package</code> <code>pip install package_name==3.2.0</code></li>
+<li>安装不低于某个版本的<code>Package</code>  <code>pip install &#39;package_name&gt;=3.0.0&#39;</code></li>
+<li>批量安装<code>Package</code> <code>pip install -r requirements.txt</code></li>
+<li>卸载<code>Package</code>  <code>pip uninstall package_name</code></li>
+</ol>
+<p>更多用法请参考<a href="/article/bf2e/">Python pip介绍</a>。</p>
+<h3><span id="pypi">PyPI</span></h3><p><code>PyPI</code>全称为<code>Python Package Index</code>，是Python官方的第三方库的仓库，所有人都可以下载第三方库或上传自己开发的库到<code>PyPI</code>。<code>PyPI</code>推荐使用pip包管理器来下载第三方库。</p>
+<a id="more"></a>
+<h3><span id="pyenv">pyenv</span></h3><h4><span id="pyenv-介绍">pyenv 介绍</span></h4><p><a href="https://github.com/pyenv/pyenv" target="_blank" rel="noopener"><code>pyenv</code></a>是一款<code>UNIX</code>下的Python版本管理工具，不支持Windows。</p>
+<p><code>pyenv</code>可以改变全局的 Python 版本，安装多个版本的 Python， 设置目录级别的 Python 版本，还能创建和管理Python虚拟环境。所有的设置都是用户级别的操作，不需要<code>sudo</code>权限。</p>
+<p><code>pyenv</code>是通过修改系统环境变量<code>PATH</code>来实现的。系统环境变量<code>PATH</code>，大家都不陌生，里面包含了一串由冒号分隔的路径，例如<code>/usr/local/bin:/usr/bin:/bin</code>。每当在系统中执行一个命令时，例如<code>python</code>或<code>pip</code>，操作系统就会在<code>PATH</code>的所有路径中从左至右依次寻找对应的命令。因为是依次寻找，因此排在左边的路径具有更高的优先级。而<code>pyenv</code>做的，就是在<code>PATH</code>最前面插入一个<code>$(pyenv root)/shims</code>目录。这样，<code>pyenv</code>就可以通过控制<code>shims</code>目录中的Python版本号，来灵活地切换至我们所需的Python版本。</p>
+<h4><span id="pyenv-安装">pyenv 安装</span></h4><h5><span id="脚本自动安装推荐">脚本自动安装(推荐)</span></h5><p>最简单的方式就是通过<code>pyenv-install</code>脚本自动安装，默认安装在用户目录<code>~/.pyenv</code>。</p>
+<p><code>$ curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash</code></p>
+<p>如果你用的<code>zsh</code>，则将末尾的<code>bash</code>替换成<code>zsh</code>即可。</p>
+<p>通过此方式，除了安装<code>pyenv</code>以外，还包含如下插件:</p>
+<ul>
+<li><code>pyenv-doctor</code></li>
+<li><code>pyenv-installer</code></li>
+<li><code>pyenv-update</code></li>
+<li><code>pyenv-virtualenv</code></li>
+<li><code>pyenv-which-ext</code></li>
+</ul>
+<p>通过<code>pyenv update</code>命令可升级以上全部插件。</p>
+<p>如果不确定<code>pyenv</code>的环境是否安装正常，可以通过<code>pyenv doctor</code>命令对环境进行检测。</p>
+<p>如果你要卸载<code>pyenv</code>，执行<code>rm -rf $(pyenv root)</code>，然后删除<code>~/.bashrc</code>文件中的下列内容即可。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export PATH="~/.pyenv/bin:$PATH"</span><br><span class="line">eval "$(pyenv init -)"</span><br><span class="line">eval "$(pyenv virtualenv-init -)"</span><br></pre></td></tr></table></figure>
+<h5><span id="通过git手动安装">通过Git手动安装</span></h5><p>首先，clone项目到你想安装的路径</p>
+<p><code>$ git clone https://github.com/pyenv/pyenv.git ~/.pyenv</code></p>
+<p>定义环境变量，添加<code>pyenv init</code>到shell</p>
+<p><code>$ echo &#39;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&#39; &gt;&gt; ~/.bashrc</code><br><code>$ echo &#39;export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&#39; &gt;&gt; ~/.bashrc</code><br><code>$ echo -e &#39;if command -v pyenv 1&gt;/dev/null 2&gt;&amp;1; then\n  eval &quot;$(pyenv init -)&quot;\nfi&#39; &gt;&gt; ~/.bashrc</code></p>
+<p>重启shell，使修改后的<code>Path</code>生效</p>
+<p><code>$ exec &quot;$SHELL&quot;</code></p>
+<p>升级<code>pyenv</code></p>
+<p><code>cd $(pyenv root) &amp;&amp; git pull</code></p>
+<h4><span id="pyenv-用法">pyenv 用法</span></h4><h5><span id="查看已安装-python-版本">查看已安装 Python 版本</span></h5><p><code>$ pyenv versions</code></p>
+<h5><span id="查看可安装-python-版本">查看可安装 Python 版本</span></h5><p><code>$ pyenv install -l/--list</code></p>
+<h5><span id="安装指定版本python">安装指定版本Python</span></h5><p><code>$ pyenv install 3.5.2</code></p>
+<h5><span id="卸载指定版本python">卸载指定版本Python</span></h5><p><code>$ pyenv uninstall 3.5.2</code></p>
+<h5><span id="查看当前激活的python版本及相关信息">查看当前激活的Python版本及相关信息</span></h5><p><code>$ pyenv version</code></p>
+<h5><span id="列出包含给定命令的所有python版本">列出包含给定命令的所有Python版本</span></h5><p><code>$ pyenv whence [command]</code></p>
+<p>如查看哪些版本安装了<code>supervisor</code></p>
+<p><code>$ pyenv whence supervisorctl</code></p>
+<h5><span id="查看当前激活python版本指定命令全路径">查看当前激活Python版本指定命令全路径</span></h5><p><code>$ pyenv which supervisorctl</code></p>
+<h5><span id="重建shims">重建<code>shims</code></span></h5><p><code>$ pyenv rehash</code></p>
+<p><em>每次安装|卸载Python版本或带有可执行文件的Package(如 pip、supervisor等)以后，都应该执行一次本命令</em></p>
+<h5><span id="切换python版本">切换Python版本</span></h5><p><code>$ pyenv global|local|shell [python_version]</code></p>
+<p><code>pyenv</code>可以从三个维度来管理<code>Python</code>环境，对应命令分别是: <code>global</code>(当前系统)、<code>local</code>(当前目录)、<code>shell</code>(当前shell)。这三个维度的优先级从左到右依次升高，即<code>global</code>的优先级最低、<code>shell</code>的优先级最高。对应<code>pyenv</code>的版本信息分别记录在<code>$(pyenv root)/version</code>、<code>当前目录.python-version</code>、当前shell session的环境变量<code>PYENV_VERSION</code>。</p>
+<p><code>$ pyenv local|shell --unset</code>可分别取消<code>local</code>和<code>shell</code>级别的Python环境设置。</p>
+<h3><span id="virtualenv">virtualenv</span></h3><h4><span id="virtualenv-介绍">virtualenv 介绍</span></h4><p><a href="https://github.com/pypa/virtualenv" target="_blank" rel="noopener"><code>virtualenv</code></a>是一款支持Python”虚拟”运行环境的工具，可以方便的管理Python Package版本，支持Windows。</p>
+<blockquote>
+<p>virtualenv is a tool to create isolated Python environments.</p>
+</blockquote>
+<p><code>virtualenv</code>通过创建独立Python开发环境，来解决依赖、版本以及间接权限问题。比如一个项目依赖<code>Celery 3.2.5</code>，而当前全局开发环境为<code>Celery 4.2.0</code>，版本跨度过大， 导致不兼容使项目无法正在运行， 使用<code>virtualenv</code>可以解决这些问题。</p>
+<blockquote>
+<p><code>virtualenv</code>创建一个拥有自己安装目录的环境, 这个环境不与其他虚拟环境共享库, 能够方便的管理Python版本和管理Python库。</p>
+</blockquote>
+<h4><span id="virtualenv-安装">virtualenv 安装</span></h4><h5><span id="pip命令安装">pip命令安装</span></h5><p><code>$ [sudo] pip install virtualenv</code><br>或者<br><code>$ [sudo] pip install https://github.com/pypa/virtualenv/tarball/master</code></p>
+<h5><span id="源码安装">源码安装</span></h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> curl -O https://github.com/pypa/virtualenv/archive/16.0.0.tar.gz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> tar xvfz virtualenv-16.0.0.tar.gz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> virtualenv-16.0.0</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> [sudo] python setup.py install</span></span><br></pre></td></tr></table></figure>
+<h4><span id="virtualenv-用法">virtualenv 用法</span></h4><h5><span id="linux">Linux</span></h5><ul>
+<li><p>创建虚拟环境</p>
+<p><code>$ virtualenv [-p|--python /usr/bin/python3.5] env_test</code></p>
+</li>
+<li><p>激活虚拟环境</p>
+<p><code>$ source env_test/bin/activate</code></p>
+</li>
+<li><p>取消激活</p>
+<p><code>$ deactivate</code></p>
+</li>
+<li><p>删除虚拟环境</p>
+<p><code>$ rm -rf env_test</code></p>
+</li>
+</ul>
+<h5><span id="windows">Windows</span></h5><ul>
+<li><p>创建虚拟环境</p>
+<p><code>&gt; virtualenv [-p|--python &quot;c:\Python27\python.exe&quot;] env_test</code></p>
+</li>
+<li><p>激活虚拟环境</p>
+<p><code>&gt; env_test\Scripts\activate</code></p>
+</li>
+<li><p>取消激活</p>
+<p><code>&gt; env_test\Scripts\deactivate.bat</code></p>
+</li>
+<li><p>删除虚拟环境</p>
+<p><code>&gt; rd /s /q env_test</code></p>
+</li>
+</ul>
+<h4><span id="pyenv-virtualenv">pyenv-virtualenv</span></h4><p><code>pyenv</code>已内置了<code>pyenv-virtualenv</code>插件，无需另外安装。</p>
+<ul>
+<li><p>创建项目环境</p>
+<p><code>$ pyenv virtualenv 3.5.2 env_test</code></p>
+</li>
+<li><p>项目环境设置</p>
+<p><code>$ pyenv local env_test</code></p>
+<p>设置后，只要<code>cd</code>进这个目录，就会启用对应环境。</p>
+</li>
+</ul>
+<p>命令参考:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">Usage: pyenv virtualenv [-f|--force] [VIRTUALENV_OPTIONS] [version] &lt;virtualenv-name&gt;</span><br><span class="line">       pyenv virtualenv --version</span><br><span class="line">       pyenv virtualenv --help</span><br><span class="line"></span><br><span class="line">  -f/--force       Install even if the version appears to be installed already</span><br><span class="line"></span><br><span class="line">Usage: virtualenv [OPTIONS] DEST_DIR</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  --version             show program's version number and exit</span><br><span class="line">  -h, --help            show this help message and exit</span><br><span class="line">  -v, --verbose         Increase verbosity.</span><br><span class="line">  -q, --quiet           Decrease verbosity.</span><br><span class="line">  -p PYTHON_EXE, --python=PYTHON_EXE</span><br><span class="line">                        The Python interpreter to use, e.g.,</span><br><span class="line">                        --python=python2.5 will use the python2.5 interpreter</span><br><span class="line">                        to create the new environment.  The default is the</span><br><span class="line">                        interpreter that virtualenv was installed with</span><br><span class="line">                        (/usr/bin/python3)</span><br><span class="line">  --clear               Clear out the non-root install and start from scratch.</span><br><span class="line">  --no-site-packages    DEPRECATED. Retained only for backward compatibility.</span><br><span class="line">                        Not having access to global site-packages is now the</span><br><span class="line">                        default behavior.</span><br><span class="line">  --system-site-packages</span><br><span class="line">                        Give the virtual environment access to the global</span><br><span class="line">                        site-packages.</span><br><span class="line">  --always-copy         Always copy files rather than symlinking.</span><br><span class="line">  --unzip-setuptools    Unzip Setuptools when installing it.</span><br><span class="line">  --relocatable         Make an EXISTING virtualenv environment relocatable.</span><br><span class="line">                        This fixes up scripts and makes all .pth files</span><br><span class="line">                        relative.</span><br><span class="line">  --no-setuptools       Do not install setuptools in the new virtualenv.</span><br><span class="line">  --no-pip              Do not install pip in the new virtualenv.</span><br><span class="line">  --no-wheel            Do not install wheel in the new virtualenv.</span><br><span class="line">  --extra-search-dir=DIR</span><br><span class="line">                        Directory to look for setuptools/pip distributions in.</span><br><span class="line">                        This option can be used multiple times.</span><br><span class="line">  --download            Download preinstalled packages from PyPI.</span><br><span class="line">  --no-download, --never-download</span><br><span class="line">                        Do not download preinstalled packages from PyPI.</span><br><span class="line">  --prompt=PROMPT       Provides an alternative prompt prefix for this</span><br><span class="line">                        environment.</span><br><span class="line">  --setuptools          DEPRECATED. Retained only for backward compatibility.</span><br><span class="line">                        This option has no effect.</span><br><span class="line">  --distribute          DEPRECATED. Retained only for backward compatibility.</span><br><span class="line">                        This option has no effect.</span><br></pre></td></tr></table></figure>
+<h3><span id="virtualenvwrapper">virtualenvwrapper</span></h3><h4><span id="virtualenvwrapper-介绍">virtualenvwrapper 介绍</span></h4><p><a href="https://pypi.org/project/virtualenvwrapper/" target="_blank" rel="noopener"><code>virtualenvwrapper</code></a>是<code>virtualenv</code>的扩展工具包，它将所有虚拟环境整合在一个目录下，并且对<code>virtualenv</code>命令进行了封装，可以很方便的创建、删除、复制虚拟环境。</p>
+<p><code>virtualenvwrapper</code>不支持Windows，可用<code>virtualenvwrapper-win</code>替代，下文有介绍。</p>
+<h4><span id="virtualenvwrapper-安装">virtualenvwrapper 安装</span></h4><p><code>virtualenvwrapper</code>依赖<code>virtualenv</code>，所以需要先安装<code>virtualenv</code>。</p>
+<p><code>$ pip install --user virtualenvwrapper</code><br>或<br><code>$ sudo pip install virtualenvwrapper</code></p>
+<p><em><code>--user</code>安装在用户目录，默认为<code>$HOME/.local/</code>，<code>sudo</code>安装在<code>/usr/local/</code>目录</em></p>
+<p>配置工作目录和项目目录，在 <code>~/.zshrc</code> 中加入如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export WORKON_HOME=$HOME/.virtualenvs</span><br><span class="line">export PROJECT_HOME=$HOME/PyEnvs</span><br><span class="line">source $HOME/.local/bin/virtualenvwrapper.sh</span><br></pre></td></tr></table></figure>
+<p>然后执行<code>source ~/.zshrc</code>，即可生效。</p>
+<p>如果使用的是 <code>bash</code>，则将<code>~/.zshrc</code>替换成 <code>~/.bashrc</code> 。</p>
+<h4><span id="virtualenvwrapper-用法">virtualenvwrapper 用法</span></h4><h5><span id="创建新的虚拟环境">创建新的虚拟环境</span></h5><p><code>$ mkvirtualenv [envname]</code></p>
+<p>该命令会帮我们创建一个新环境，默认情况下，环境的目录是 <code>~/.virtualenv/enname</code>，创建过程中它会自动帮我们安装 pip 等必要的软件，以后我们要安装新依赖时可直接使用 pip 命令。创建完之后，自动切换到该环境下工作，可看到提示符前边多了像<code>(envname)$</code>这样的字符。在这个环境下安装的依赖不会影响到其他的环境。</p>
+<p>该命令有几个可选参数:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-a project_path</span><br><span class="line">    与一个工程目录建立关联</span><br><span class="line">-i package</span><br><span class="line">    创建环境时安装相应的包.</span><br><span class="line">    如 -i Flask、-i Flask==0.11.1 或者安装多个包 -i Flask -i locustio</span><br><span class="line">-r requirements_file</span><br><span class="line">    同 pip install -r requirements_file 用法</span><br></pre></td></tr></table></figure>
+<p>该命令还支持加入 virtualenv 的参数选项，例如指定环境的 python 版本为 3.5:</p>
+<p><code>$ mkvirtualenv env_test --python=python3.5</code></p>
+<p>如果出现<code>No module named virtualenvwrapper</code>，可将下列内容添加到<code>~/.zshrc</code>，重新执行<code>source ~/.zshrc</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python</span><br></pre></td></tr></table></figure>
+<h5><span id="创建新项目">创建新项目</span></h5><p><code>$ mkdir $PROJECT_HOME</code></p>
+<p><code>$ mkproject proname</code></p>
+<p>该命令要求配置<code>PROJECT_HOME</code>目录，它在WORKON_HOME 目录下创建一个名为 proname 的虚拟环境，同时在 <code>PROJECT_HOME</code> 目录下创建名为 proname 的项目目录。创建完成后会自动激活虚拟环境，并进入 proname 目录。</p>
+<h5><span id="创建临时运行环境">创建临时运行环境</span></h5><p><code>$ mktmpenv</code></p>
+<h5><span id="切换虚拟环境">切换虚拟环境</span></h5><p><code>$ workon envname</code></p>
+<h5><span id="退出虚拟环境">退出虚拟环境</span></h5><p><code>$ deactivate</code></p>
+<h5><span id="列出所有环境">列出所有环境</span></h5><p><code>$ workon</code> 或 <code>$ lsvirtualenv</code></p>
+<h5><span id="删除环境">删除环境</span></h5><p><code>$ rmvirtualenv [envname]</code></p>
+<h5><span id="显示环境详情">显示环境详情</span></h5><p><code>$ showvirtualenv [envname]</code></p>
+<h5><span id="复制环境">复制环境</span></h5><p><code>$ cpvirtualenv [source] [dest]</code></p>
+<h5><span id="列出当前工作环境中安装的包">列出当前工作环境中安装的包</span></h5><p><code>$ lssitepackages</code></p>
+<p>更多命令请参考<a href="https://virtualenvwrapper.readthedocs.io/en/latest/command_ref.html" target="_blank" rel="noopener">Command Reference</a></p>
+<h3><span id="virtualenvwrapper-win">virtualenvwrapper-win</span></h3><h4><span id="virtualenvwrapper-win-介绍">virtualenvwrapper-win 介绍</span></h4><p><code>virtualenvwrapper-win</code>是<code>virtualenvwrapper</code>的Windows版本，功能和用法都类似。</p>
+<h4><span id="virtualenvwrapper-win-安装">virtualenvwrapper-win 安装</span></h4><p><code>$ pip install virtualenvwrapper-win</code></p>
+<h4><span id="virtualenvwrapper-win-用法">virtualenvwrapper-win 用法</span></h4><h5><span id="创建新的虚拟环境">创建新的虚拟环境</span></h5><p><code>&gt; mkvirtualenv -p &quot;c:\Python2712\python.exe&quot;  env-test</code></p>
+<h5><span id="设置项目目录">设置项目目录</span></h5><p><code>&gt; setprojectdir d:\project-test</code></p>
+<h5><span id="查看已安装虚拟环境">查看已安装虚拟环境</span></h5><p><code>&gt; lsvirtualenv</code></p>
+<h5><span id="删除虚拟环境">删除虚拟环境</span></h5><p><code>&gt; rmvirtualenv env-test</code></p>
+<h5><span id="切换虚拟环境">切换虚拟环境</span></h5><p><code>&gt; workon env-test</code></p>
+<h5><span id="退出虚拟环境">退出虚拟环境</span></h5><p><code>&gt; deactivate</code> </p>
+<p>更多命令请参考<a href="https://github.com/davidmarble/virtualenvwrapper-win#main-commands" target="_blank" rel="noopener">Main Commands</a></p>
+<p>参考资料:<br><a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md" target="_blank" rel="noopener">pyenv 命令参考文档</a><br><a href="https://virtualenv.pypa.io/en/stable/" target="_blank" rel="noopener">virtualenv 官方文档</a><br><a href="https://virtualenvwrapper.readthedocs.io/en/latest/" target="_blank" rel="noopener">virtualenvwrapper 官方文档</a><br><a href="https://pypi.org/project/virtualenvwrapper-win/" target="_blank" rel="noopener">virtualenvwrapper-win</a><br><a href="https://www.jianshu.com/p/4646dedaaff5" target="_blank" rel="noopener">Python安装与版本管理</a><br><a href="http://debugtalk.com/post/use-pyenv-manage-multiple-python-virtualenvs/" target="_blank" rel="noopener">使用pyenv管理多个Python版本依赖环境</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/pip/" rel="tag"># pip</a>
+          
+            <a href="/tags/pyenv/" rel="tag"># pyenv</a>
+          
+            <a href="/tags/virtualenv/" rel="tag"># virtualenv</a>
+          
+            <a href="/tags/PyPi/" rel="tag"># PyPi</a>
+          
+            <a href="/tags/virtualenvwrapper/" rel="tag"># virtualenvwrapper</a>
+          
+            <a href="/tags/virtualenvwrapper-win/" rel="tag"># virtualenvwrapper-win</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/bf2e/" rel="next" title="Python pip命令介绍">
+                <i class="fa fa-chevron-left"></i> Python pip命令介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/957a/" rel="prev" title="Linux tree命令">
+                Linux tree命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjM5OS84OTYw"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/resource/images/my_avatar.jpg"
+                alt="Wayde" />
+            
+              <p class="site-author-name" itemprop="name">Wayde</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">140</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">112</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Wayde2014" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/8013174/pandllcom" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://instagram.com/wayde2015" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text"><span id="pip">pip</span></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text"><span id="pypi">PyPI</span></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text"><span id="pyenv">pyenv</span></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.1.</span> <span class="nav-text"><span id="pyenv-&#x4ECB;&#x7ECD;">pyenv &#x4ECB;&#x7ECD;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.</span> <span class="nav-text"><span id="pyenv-&#x5B89;&#x88C5;">pyenv &#x5B89;&#x88C5;</span></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.1.</span> <span class="nav-text"><span id="&#x811A;&#x672C;&#x81EA;&#x52A8;&#x5B89;&#x88C5;&#x63A8;&#x8350;">&#x811A;&#x672C;&#x81EA;&#x52A8;&#x5B89;&#x88C5;(&#x63A8;&#x8350;)</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.2.2.</span> <span class="nav-text"><span id="&#x901A;&#x8FC7;git&#x624B;&#x52A8;&#x5B89;&#x88C5;">&#x901A;&#x8FC7;Git&#x624B;&#x52A8;&#x5B89;&#x88C5;</span></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.</span> <span class="nav-text"><span id="pyenv-&#x7528;&#x6CD5;">pyenv &#x7528;&#x6CD5;</span></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.1.</span> <span class="nav-text"><span id="&#x67E5;&#x770B;&#x5DF2;&#x5B89;&#x88C5;-python-&#x7248;&#x672C;">&#x67E5;&#x770B;&#x5DF2;&#x5B89;&#x88C5; Python &#x7248;&#x672C;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.2.</span> <span class="nav-text"><span id="&#x67E5;&#x770B;&#x53EF;&#x5B89;&#x88C5;-python-&#x7248;&#x672C;">&#x67E5;&#x770B;&#x53EF;&#x5B89;&#x88C5; Python &#x7248;&#x672C;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.3.</span> <span class="nav-text"><span id="&#x5B89;&#x88C5;&#x6307;&#x5B9A;&#x7248;&#x672C;python">&#x5B89;&#x88C5;&#x6307;&#x5B9A;&#x7248;&#x672C;Python</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.4.</span> <span class="nav-text"><span id="&#x5378;&#x8F7D;&#x6307;&#x5B9A;&#x7248;&#x672C;python">&#x5378;&#x8F7D;&#x6307;&#x5B9A;&#x7248;&#x672C;Python</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.5.</span> <span class="nav-text"><span id="&#x67E5;&#x770B;&#x5F53;&#x524D;&#x6FC0;&#x6D3B;&#x7684;python&#x7248;&#x672C;&#x53CA;&#x76F8;&#x5173;&#x4FE1;&#x606F;">&#x67E5;&#x770B;&#x5F53;&#x524D;&#x6FC0;&#x6D3B;&#x7684;Python&#x7248;&#x672C;&#x53CA;&#x76F8;&#x5173;&#x4FE1;&#x606F;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.6.</span> <span class="nav-text"><span id="&#x5217;&#x51FA;&#x5305;&#x542B;&#x7ED9;&#x5B9A;&#x547D;&#x4EE4;&#x7684;&#x6240;&#x6709;python&#x7248;&#x672C;">&#x5217;&#x51FA;&#x5305;&#x542B;&#x7ED9;&#x5B9A;&#x547D;&#x4EE4;&#x7684;&#x6240;&#x6709;Python&#x7248;&#x672C;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.7.</span> <span class="nav-text"><span id="&#x67E5;&#x770B;&#x5F53;&#x524D;&#x6FC0;&#x6D3B;python&#x7248;&#x672C;&#x6307;&#x5B9A;&#x547D;&#x4EE4;&#x5168;&#x8DEF;&#x5F84;">&#x67E5;&#x770B;&#x5F53;&#x524D;&#x6FC0;&#x6D3B;Python&#x7248;&#x672C;&#x6307;&#x5B9A;&#x547D;&#x4EE4;&#x5168;&#x8DEF;&#x5F84;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.8.</span> <span class="nav-text"><span id="&#x91CD;&#x5EFA;shims">&#x91CD;&#x5EFA;<code>shims</code></span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">3.3.9.</span> <span class="nav-text"><span id="&#x5207;&#x6362;python&#x7248;&#x672C;">&#x5207;&#x6362;Python&#x7248;&#x672C;</span></span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text"><span id="virtualenv">virtualenv</span></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.1.</span> <span class="nav-text"><span id="virtualenv-&#x4ECB;&#x7ECD;">virtualenv &#x4ECB;&#x7ECD;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.2.</span> <span class="nav-text"><span id="virtualenv-&#x5B89;&#x88C5;">virtualenv &#x5B89;&#x88C5;</span></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">4.2.1.</span> <span class="nav-text"><span id="pip&#x547D;&#x4EE4;&#x5B89;&#x88C5;">pip&#x547D;&#x4EE4;&#x5B89;&#x88C5;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">4.2.2.</span> <span class="nav-text"><span id="&#x6E90;&#x7801;&#x5B89;&#x88C5;">&#x6E90;&#x7801;&#x5B89;&#x88C5;</span></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.3.</span> <span class="nav-text"><span id="virtualenv-&#x7528;&#x6CD5;">virtualenv &#x7528;&#x6CD5;</span></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">4.3.1.</span> <span class="nav-text"><span id="linux">Linux</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">4.3.2.</span> <span class="nav-text"><span id="windows">Windows</span></span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">4.4.</span> <span class="nav-text"><span id="pyenv-virtualenv">pyenv-virtualenv</span></span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text"><span id="virtualenvwrapper">virtualenvwrapper</span></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">5.1.</span> <span class="nav-text"><span id="virtualenvwrapper-&#x4ECB;&#x7ECD;">virtualenvwrapper &#x4ECB;&#x7ECD;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">5.2.</span> <span class="nav-text"><span id="virtualenvwrapper-&#x5B89;&#x88C5;">virtualenvwrapper &#x5B89;&#x88C5;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.</span> <span class="nav-text"><span id="virtualenvwrapper-&#x7528;&#x6CD5;">virtualenvwrapper &#x7528;&#x6CD5;</span></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.1.</span> <span class="nav-text"><span id="&#x521B;&#x5EFA;&#x65B0;&#x7684;&#x865A;&#x62DF;&#x73AF;&#x5883;">&#x521B;&#x5EFA;&#x65B0;&#x7684;&#x865A;&#x62DF;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.2.</span> <span class="nav-text"><span id="&#x521B;&#x5EFA;&#x65B0;&#x9879;&#x76EE;">&#x521B;&#x5EFA;&#x65B0;&#x9879;&#x76EE;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.3.</span> <span class="nav-text"><span id="&#x521B;&#x5EFA;&#x4E34;&#x65F6;&#x8FD0;&#x884C;&#x73AF;&#x5883;">&#x521B;&#x5EFA;&#x4E34;&#x65F6;&#x8FD0;&#x884C;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.4.</span> <span class="nav-text"><span id="&#x5207;&#x6362;&#x865A;&#x62DF;&#x73AF;&#x5883;">&#x5207;&#x6362;&#x865A;&#x62DF;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.5.</span> <span class="nav-text"><span id="&#x9000;&#x51FA;&#x865A;&#x62DF;&#x73AF;&#x5883;">&#x9000;&#x51FA;&#x865A;&#x62DF;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.6.</span> <span class="nav-text"><span id="&#x5217;&#x51FA;&#x6240;&#x6709;&#x73AF;&#x5883;">&#x5217;&#x51FA;&#x6240;&#x6709;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.7.</span> <span class="nav-text"><span id="&#x5220;&#x9664;&#x73AF;&#x5883;">&#x5220;&#x9664;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.8.</span> <span class="nav-text"><span id="&#x663E;&#x793A;&#x73AF;&#x5883;&#x8BE6;&#x60C5;">&#x663E;&#x793A;&#x73AF;&#x5883;&#x8BE6;&#x60C5;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.9.</span> <span class="nav-text"><span id="&#x590D;&#x5236;&#x73AF;&#x5883;">&#x590D;&#x5236;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">5.3.10.</span> <span class="nav-text"><span id="&#x5217;&#x51FA;&#x5F53;&#x524D;&#x5DE5;&#x4F5C;&#x73AF;&#x5883;&#x4E2D;&#x5B89;&#x88C5;&#x7684;&#x5305;">&#x5217;&#x51FA;&#x5F53;&#x524D;&#x5DE5;&#x4F5C;&#x73AF;&#x5883;&#x4E2D;&#x5B89;&#x88C5;&#x7684;&#x5305;</span></span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">6.</span> <span class="nav-text"><span id="virtualenvwrapper-win">virtualenvwrapper-win</span></span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">6.1.</span> <span class="nav-text"><span id="virtualenvwrapper-win-&#x4ECB;&#x7ECD;">virtualenvwrapper-win &#x4ECB;&#x7ECD;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">6.2.</span> <span class="nav-text"><span id="virtualenvwrapper-win-&#x5B89;&#x88C5;">virtualenvwrapper-win &#x5B89;&#x88C5;</span></span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undefined"><span class="nav-number">6.3.</span> <span class="nav-text"><span id="virtualenvwrapper-win-&#x7528;&#x6CD5;">virtualenvwrapper-win &#x7528;&#x6CD5;</span></span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">6.3.1.</span> <span class="nav-text"><span id="&#x521B;&#x5EFA;&#x65B0;&#x7684;&#x865A;&#x62DF;&#x73AF;&#x5883;">&#x521B;&#x5EFA;&#x65B0;&#x7684;&#x865A;&#x62DF;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">6.3.2.</span> <span class="nav-text"><span id="&#x8BBE;&#x7F6E;&#x9879;&#x76EE;&#x76EE;&#x5F55;">&#x8BBE;&#x7F6E;&#x9879;&#x76EE;&#x76EE;&#x5F55;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">6.3.3.</span> <span class="nav-text"><span id="&#x67E5;&#x770B;&#x5DF2;&#x5B89;&#x88C5;&#x865A;&#x62DF;&#x73AF;&#x5883;">&#x67E5;&#x770B;&#x5DF2;&#x5B89;&#x88C5;&#x865A;&#x62DF;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">6.3.4.</span> <span class="nav-text"><span id="&#x5220;&#x9664;&#x865A;&#x62DF;&#x73AF;&#x5883;">&#x5220;&#x9664;&#x865A;&#x62DF;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">6.3.5.</span> <span class="nav-text"><span id="&#x5207;&#x6362;&#x865A;&#x62DF;&#x73AF;&#x5883;">&#x5207;&#x6362;&#x865A;&#x62DF;&#x73AF;&#x5883;</span></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#undefined"><span class="nav-number">6.3.6.</span> <span class="nav-text"><span id="&#x9000;&#x51FA;&#x865A;&#x62DF;&#x73AF;&#x5883;">&#x9000;&#x51FA;&#x865A;&#x62DF;&#x73AF;&#x5883;</span></span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<!-- Default Statcounter code for blog.pandll.com
+https://blog.pandll.com -->
+<script type="text/javascript">
+var sc_project=8761787;
+var sc_invisible=1;
+var sc_security="83c65835";
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics"
+href="http://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="//c.statcounter.com/8761787/0/83c65835/1/" alt="Web
+Analytics"></a></div></noscript>
+<!-- End of Statcounter Code -->
+
+<div class="copyright">&copy; 2012&ndash;<span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wayde</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom"><a href="https://beian.miit.gov.cn">粤ICP备2020135844号</a><script type="text/javascript">var sc_project=8761787;var sc_invisible=1;var sc_security="83c65835";</script><script type="text/javascript" src="https://www.statcounter.com/counter/counter.js"async></script><noscript><div class="statcounter"><a title="web statistics"href="https://statcounter.com/" target="_blank"><imgclass="statcounter"src="https://c.statcounter.com/8761787/0/83c65835/1/"alt="web statistics"referrerPolicy="no-referrer-when-downgrade"></a></div></noscript></div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>

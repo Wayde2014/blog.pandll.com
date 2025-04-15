@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/pandll_180.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/pandll_32.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/pandll_16.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/pandll_512.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,thread,threading,GIL," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="线程是操作系统能够进行运算调度的最小单位，它被包含在进程之中，是进程中的实际运作单位。 如果对进程、线程概念还不是很了解，建议看下CPU、超线程与进程、线程。 Python的标准库提供了两个模块：thread和threading，前者是低级模块，后者是高级模块。threading对thread进行了封装，绝大多数情况下，我们只需要使用threading就可以了，这也是Python官方推荐。 Pyt">
+<meta name="keywords" content="Python,thread,threading,GIL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 线程模块thread和threading">
+<meta property="og:url" content="https://blog.pandll.com/article/fe62/index.html">
+<meta property="og:site_name" content="Wayde&#39;s Blog">
+<meta property="og:description" content="线程是操作系统能够进行运算调度的最小单位，它被包含在进程之中，是进程中的实际运作单位。 如果对进程、线程概念还不是很了解，建议看下CPU、超线程与进程、线程。 Python的标准库提供了两个模块：thread和threading，前者是低级模块，后者是高级模块。threading对thread进行了封装，绝大多数情况下，我们只需要使用threading就可以了，这也是Python官方推荐。 Pyt">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-03-07T15:05:14.725Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python 线程模块thread和threading">
+<meta name="twitter:description" content="线程是操作系统能够进行运算调度的最小单位，它被包含在进程之中，是进程中的实际运作单位。 如果对进程、线程概念还不是很了解，建议看下CPU、超线程与进程、线程。 Python的标准库提供了两个模块：thread和threading，前者是低级模块，后者是高级模块。threading对thread进行了封装，绝大多数情况下，我们只需要使用threading就可以了，这也是Python官方推荐。 Pyt">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://blog.pandll.com/article/fe62/"/>
+
+
+
+
+
+<link rel="stylesheet" href="/css/tomorrow-night.min.css" media="screen" type="text/css">
+
+  <title>Python 线程模块thread和threading | Wayde's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?54fab7a8d86da470f69ae88485845c02";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<script src="/js/prettify.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+ $('pre').addClass('prettyprint linenums');
+   prettyPrint();
+ })
+</script>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wayde's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">知识源于积累</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-collection">
+          <a href="/collection/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-star"></i> <br />
+            
+            个人收藏
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.pandll.com/article/fe62/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wayde">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/resource/images/my_avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wayde's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Python 线程模块thread和threading</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-25T13:02:00+08:00">
+                2018-05-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv">浏览量:
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>线程是操作系统能够进行运算调度的最小单位，它被包含在进程之中，是进程中的实际运作单位。</strong></p>
+<p>如果对进程、线程概念还不是很了解，建议看下<a href="/article/1d3c/">CPU、超线程与进程、线程</a>。</p>
+<p>Python的标准库提供了两个模块：<code>thread</code>和<code>threading</code>，前者是低级模块，后者是高级模块。<code>threading</code>对<code>thread</code>进行了封装，绝大多数情况下，我们只需要使用<code>threading</code>就可以了，这也是Python官方推荐。</p>
+<p><em>Python 3中，thread已经更名成_thread。</em></p>
+<a id="more"></a>
+<h3><span id="thread">thread</span></h3><p>总结几点:</p>
+<ol>
+<li>调用<code>start_new_thread</code>方法即启动线程，启动后<code>MainThread</code>必须等待，否则启动的子线程旋即退出。</li>
+<li><code>thread.exit()</code>和<code>thread.interrupt_main()</code>都是通过raise异常实现的。</li>
+<li><code>lock.acquire([waitflag])</code>方法，当<code>waitflag</code>等于0时，表示非阻塞获取锁，即获取失败也立即返回。所以下面的demo中，<code>worker</code>方法中的<code>lock.acquire(0)</code>改为<code>lock.acquire(1)</code>时，运行时间将比现在多10s。</li>
+<li>锁的<code>release</code>与<code>acquire</code>可以不是同一个线程。</li>
+<li>Py3获取锁的方法<code>lock.acquire</code>新增了<code>timeout</code>参数，并且设置的值不能大于<code>TIMEOUT_MAX</code>。</li>
+</ol>
+<p>以下demo在Python2.7和Python3.5测试通过。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">    Demo running on Py2 and Py3</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">import</span> thread</span><br><span class="line"><span class="keyword">except</span> ImportError:</span><br><span class="line">    <span class="keyword">import</span> _thread <span class="keyword">as</span> thread</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">worker</span><span class="params">(run_num=<span class="number">3</span>, internal=<span class="number">2</span>, max_num=<span class="number">11</span>, lock=None)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    干活的worker</span></span><br><span class="line"><span class="string">    :param run_num:</span></span><br><span class="line"><span class="string">    :param internal:</span></span><br><span class="line"><span class="string">    :param max_num:</span></span><br><span class="line"><span class="string">    :param lock:</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> isinstance(lock, thread.LockType):</span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">            Py2</span></span><br><span class="line"><span class="string">            lock.acquire([waitflag])</span></span><br><span class="line"><span class="string">            无参数时, 无条件获取锁, 无法获取时, 会被阻塞,直到锁被释放</span></span><br><span class="line"><span class="string">            有参数时, waitflag = 0 时,表示只有在不需要等待的情况下才获取锁, 非零情况与上面相同</span></span><br><span class="line"><span class="string">            返回值 :　获得锁成功返回True, 获得锁失败返回False</span></span><br><span class="line"><span class="string">            Py3</span></span><br><span class="line"><span class="string">            lock.acquire(waitflag=1, timeout=-1)</span></span><br><span class="line"><span class="string">            waitflag=0时，可以设置阻塞等待锁的超时时间(设置的值不能超过_thread.TIMEOUT_MAX)</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lock.acquire(<span class="number">0</span>):</span><br><span class="line">            print(</span><br><span class="line">                <span class="string">"Thread: &#123;0&#125; 获取锁失败!! 当前时间: &#123;1&#125;"</span>.format(</span><br><span class="line">                    thread.get_ident(), datetime.now().strftime(<span class="string">"%Y-%m-%d %H:%M:%S.%f"</span>)</span><br><span class="line">                )</span><br><span class="line">            )</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(run_num):</span><br><span class="line">        <span class="keyword">if</span> i &gt;= max_num:</span><br><span class="line">            print(<span class="string">"Thread &#123;0&#125; 运行次数已达上限(&#123;1&#125;),即将退出"</span>.format(thread.get_ident(), max_num))</span><br><span class="line">            thread.interrupt_main()  <span class="comment"># raise KeyboardInterrupt</span></span><br><span class="line">            thread.exit()  <span class="comment"># raise SystemExit</span></span><br><span class="line">        print(</span><br><span class="line">            <span class="string">"Thread: &#123;0&#125;, 当前时间: &#123;1&#125;"</span>.format(</span><br><span class="line">                thread.get_ident(), datetime.now().strftime(<span class="string">"%Y-%m-%d %H:%M:%S.%f"</span>)</span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line">        time.sleep(internal)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> isinstance(lock, thread.LockType) <span class="keyword">and</span> lock.locked():</span><br><span class="line">        <span class="comment"># 如果锁的状态是unlock,调用lock.release()会抛RuntimeError异常</span></span><br><span class="line">        lock.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo_no_lock</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    未使用锁的demo</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    work1_ident = thread.start_new_thread(worker, ())</span><br><span class="line">    print(<span class="string">"Thread work1 identifier: &#123;0&#125;"</span>.format(work1_ident))</span><br><span class="line"></span><br><span class="line">    work2_ident = thread.start_new_thread(worker, (), dict(run_num=<span class="number">15</span>, internal=<span class="number">1</span>))</span><br><span class="line">    print(<span class="string">"Thread work2 identifier: &#123;0&#125;"</span>.format(work2_ident))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># sleep时间必须足够长,等待子线程结束</span></span><br><span class="line">    time.sleep(<span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo_lock</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    使用锁的demo</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取2个互斥锁</span></span><br><span class="line">    locks = map(<span class="keyword">lambda</span> _: thread.allocate_lock(), range(<span class="number">2</span>))</span><br><span class="line">    <span class="comment"># 兼容py3,py3中map函数返回值为迭代器iterator</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(locks, list):</span><br><span class="line">        locks = [i <span class="keyword">for</span> i <span class="keyword">in</span> locks]</span><br><span class="line"></span><br><span class="line">    work1_ident = thread.start_new_thread(worker, (), dict(lock=locks[<span class="number">0</span>]))</span><br><span class="line">    print(<span class="string">"Thread work1 identifier: &#123;0&#125;"</span>.format(work1_ident))</span><br><span class="line"></span><br><span class="line">    work2_ident = thread.start_new_thread(</span><br><span class="line">        worker, (), dict(run_num=<span class="number">10</span>, internal=<span class="number">1</span>, lock=locks[<span class="number">1</span>])</span><br><span class="line">    )</span><br><span class="line">    print(<span class="string">"Thread work2 identifier: &#123;0&#125;"</span>.format(work2_ident))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># work3与work2共用一把锁,所以work3会等work2运行结束释放锁后才开始执行</span></span><br><span class="line">    work3_ident = thread.start_new_thread(</span><br><span class="line">        worker, (), dict(run_num=<span class="number">10</span>, internal=<span class="number">1</span>, lock=locks[<span class="number">1</span>])</span><br><span class="line">    )</span><br><span class="line">    print(<span class="string">"Thread work3 identifier: &#123;0&#125;"</span>.format(work3_ident))</span><br><span class="line"></span><br><span class="line">    wait = <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">while</span> wait:</span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">            lock.locked()</span></span><br><span class="line"><span class="string">            返回值 : 如果锁已经被某个线程获取,返回True, 否则为False</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">if</span> any(map(<span class="keyword">lambda</span> x: x.locked(), locks)):</span><br><span class="line">            print(<span class="string">"MainThread 还有线程未结束, 继续等待"</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            wait = <span class="keyword">False</span></span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line"></span><br><span class="line">    begin_time = time.time()</span><br><span class="line"></span><br><span class="line">    version = <span class="string">"unlock"</span></span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) &gt; <span class="number">1</span>:</span><br><span class="line">        version = sys.argv[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 未加锁版本</span></span><br><span class="line">        <span class="keyword">if</span> version == <span class="string">"unlock"</span>:</span><br><span class="line">            demo_no_lock()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 加锁版本</span></span><br><span class="line">        <span class="keyword">elif</span> version == <span class="string">"lock"</span>:</span><br><span class="line">            demo_lock()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        <span class="comment"># 处理thread.interrupt_main()抛出的异常</span></span><br><span class="line">        print(traceback.format_exc())</span><br><span class="line"></span><br><span class="line">    print(</span><br><span class="line">        <span class="string">"MainThread 运行结束, 耗时: &#123;0&#125;(ms)"</span>.format(</span><br><span class="line">            round((time.time() - begin_time) * <span class="number">1000</span>, <span class="number">2</span>)</span><br><span class="line">        )</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<h3><span id="threading">threading</span></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">    Demo running on Py2</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> traceback</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">import</span> thread</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"></span><br><span class="line">logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">worker</span><span class="params">(run_num=<span class="number">3</span>, internal=<span class="number">2</span>, max_num=<span class="number">11</span>, lock=None)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    干活的worker</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> isinstance(lock, thread.LockType) <span class="keyword">or</span> isinstance(lock, threading._RLock):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> lock.acquire(<span class="keyword">True</span>):</span><br><span class="line">            print(</span><br><span class="line">                <span class="string">"Thread: &#123;0&#125; 获取锁失败!! 当前时间: &#123;1&#125;"</span>.format(</span><br><span class="line">                    thread.get_ident(), datetime.now().strftime(<span class="string">"%Y-%m-%d %H:%M:%S.%f"</span>)</span><br><span class="line">                )</span><br><span class="line">            )</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    current_thread = threading.current_thread()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(run_num):</span><br><span class="line">        print(</span><br><span class="line">            <span class="string">"Thread: &#123;0&#125;-&#123;1&#125;, 当前时间: &#123;2&#125;"</span>.format(</span><br><span class="line">                current_thread.name,</span><br><span class="line">                current_thread.ident,</span><br><span class="line">                datetime.now().strftime(<span class="string">"%Y-%m-%d %H:%M:%S.%f"</span>),</span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line">        time.sleep(internal)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> isinstance(lock, thread.LockType) <span class="keyword">or</span> isinstance(lock, threading._RLock):</span><br><span class="line">        <span class="comment"># 如果锁的状态是unlock,调用lock.release()会抛RuntimeError异常</span></span><br><span class="line">        lock.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo_no_lock</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    未使用锁的demo</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    work1 = threading.Thread(target=worker, name=<span class="string">"work1"</span>, args=(<span class="number">5</span>, <span class="number">1</span>))</span><br><span class="line">    work1.setDaemon(<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">    work2 = threading.Thread(</span><br><span class="line">        target=worker, name=<span class="string">"work2"</span>, kwargs=dict(run_num=<span class="number">5</span>, internal=<span class="number">3</span>)</span><br><span class="line">    )</span><br><span class="line">    work2.setDaemon(<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Thread work1 start running..."</span>)</span><br><span class="line">    work1.start()</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Thread work2 start running..."</span>)</span><br><span class="line">    work2.start()</span><br><span class="line"></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    threading线程可以设置是否为守护线程</span></span><br><span class="line"><span class="string">    如果设置为守护线程,才需要sleep一段时间,等待子线程结束</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    time.sleep(<span class="number">8</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo_lock</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    使用锁的demo</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 获取2个互斥锁</span></span><br><span class="line">    locks = map(<span class="keyword">lambda</span> _: threading.Lock(), range(<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">    work3 = threading.Thread(target=worker, name=<span class="string">"work3"</span>, kwargs=dict(lock=locks[<span class="number">0</span>]))</span><br><span class="line"></span><br><span class="line">    work4 = threading.Thread(</span><br><span class="line">        target=worker, name=<span class="string">"work4"</span>, kwargs=dict(run_num=<span class="number">10</span>, internal=<span class="number">1</span>, lock=locks[<span class="number">1</span>])</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># work4与work5共用一把锁,所以work5会等work4运行结束释放锁后才开始执行</span></span><br><span class="line">    work5 = threading.Thread(</span><br><span class="line">        target=worker, name=<span class="string">"work5"</span>, kwargs=dict(run_num=<span class="number">10</span>, internal=<span class="number">1</span>, lock=locks[<span class="number">1</span>])</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Thread work3 start running..."</span>)</span><br><span class="line">    work3.start()</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Thread work4 start running..."</span>)</span><br><span class="line">    work4.start()</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Thread work5 start running..."</span>)</span><br><span class="line">    work5.start()</span><br><span class="line"></span><br><span class="line">    work3.join()</span><br><span class="line">    work4.join()</span><br><span class="line">    work5.join()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo_monitor</span><span class="params">()</span>:</span></span><br><span class="line"></span><br><span class="line">    work6 = threading.Thread(target=worker, name=<span class="string">"work6"</span>, kwargs=dict(run_num=<span class="number">5</span>))</span><br><span class="line">    work6.daemon = <span class="keyword">True</span></span><br><span class="line">    work6.start()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> work6.is_alive():</span><br><span class="line">        print(<span class="string">"Thread work6 is still running..."</span>)</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CountDownThread</span><span class="params">(threading.Thread)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">        self.times = kwargs.pop(<span class="string">"times"</span>, <span class="number">10</span>)</span><br><span class="line">        super(CountDownThread, self).__init__(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">while</span> self.times &gt; <span class="number">0</span>:</span><br><span class="line">            print(</span><br><span class="line">                <span class="string">"Thread &#123;0&#125; T-minus &#123;1&#125; seconds"</span>.format(</span><br><span class="line">                    threading.current_thread().name, self.times</span><br><span class="line">                )</span><br><span class="line">            )</span><br><span class="line">            self.times -= <span class="number">1</span></span><br><span class="line">            time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">demo_subclass</span><span class="params">()</span>:</span></span><br><span class="line">    work7 = CountDownThread(name=<span class="string">"work7"</span>, times=<span class="number">8</span>)</span><br><span class="line">    work7.start()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line"></span><br><span class="line">    begin_time = time.time()</span><br><span class="line"></span><br><span class="line">    version = <span class="string">"unlock"</span></span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) &gt; <span class="number">1</span>:</span><br><span class="line">        version = sys.argv[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 未加锁版本</span></span><br><span class="line">        <span class="keyword">if</span> version == <span class="string">"unlock"</span>:</span><br><span class="line">            demo_no_lock()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 加锁版本</span></span><br><span class="line">        <span class="keyword">elif</span> version == <span class="string">"lock"</span>:</span><br><span class="line">            demo_lock()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># monitor版本</span></span><br><span class="line">        <span class="keyword">elif</span> version == <span class="string">"monitor"</span>:</span><br><span class="line">            demo_monitor()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># subclass版本</span></span><br><span class="line">        <span class="keyword">elif</span> version == <span class="string">"subclass"</span>:</span><br><span class="line">            demo_subclass()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        print(traceback.format_exc())</span><br><span class="line"></span><br><span class="line">    print(</span><br><span class="line">        <span class="string">"MainThread 运行结束, 耗时: &#123;0&#125;(ms)"</span>.format(</span><br><span class="line">            round((time.time() - begin_time) * <span class="number">1000</span>, <span class="number">2</span>)</span><br><span class="line">        )</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<h3><span id="gil">GIL</span></h3><p>既然用到Python的多线程，必须得知道<code>GIL</code>的存在。</p>
+<blockquote>
+<p>GIL(Global Interpreter Lock)</p>
+<p>启动与CPU核心数量相同的N个线程，在4核CPU上可以监控到CPU占用率仅有160%，也就是使用不到两核。</p>
+<p>即使启动100个线程，使用率也就170%左右，仍然不到两核。</p>
+<p>但是用C、C++或Java来改写相同的死循环，直接可以把全部核心跑满，4核就跑到400%，8核就跑到800%，为什么Python不行呢？</p>
+<p>因为Python的线程虽然是真正的线程，但解释器执行代码时，有一个GIL锁：Global Interpreter Lock，任何Python线程执行前，必须先获得GIL锁，然后，每执行100条字节码，解释器就自动释放GIL锁，让别的线程有机会执行。这个GIL全局锁实际上把所有线程的执行代码都给上了锁，所以，多线程在Python中只能交替执行，即使100个线程跑在100核CPU上，也只能用到1个核。</p>
+<p>GIL是Python解释器设计的历史遗留问题，通常我们用的解释器是官方实现的CPython，要真正利用多核，除非重写一个不带GIL的解释器。</p>
+<p>所以，在Python中，可以使用多线程，但不要指望能有效利用多核。如果一定要通过多线程利用多核，那只能通过C扩展来实现，不过这样就失去了Python简单易用的特点。</p>
+<p>不过，也不用过于担心，Python虽然不能利用多线程实现多核任务，但可以通过多进程实现多核任务。多个Python进程有各自独立的GIL锁，互不影响。</p>
+</blockquote>
+<p>参考资料:<br><a href="https://docs.python.org/2/library/thread.html" target="_blank" rel="noopener">Python 2 thread 官方文档</a><br><a href="https://docs.python.org/3.6/library/_thread.html" target="_blank" rel="noopener">Python 3 _thread 官方文档</a><br><a href="https://www.rddoc.com/doc/Python/3.6.0/zh/library/_thread/" target="_blank" rel="noopener">Python 3 _thread 中文译文</a><br><a href="https://docs.python.org/2/library/threading.html" target="_blank" rel="noopener">Pythoh 2 threading 官方文档</a><br><a href="https://docs.python.org/3/library/threading.html" target="_blank" rel="noopener">Pythoh 3 threading 官方文档</a><br><a href="https://www.rddoc.com/doc/Python/3.6.0/zh/library/threading/" target="_blank" rel="noopener">Pythoh 3 threading 中文译文</a><br><a href="http://python3-cookbook.readthedocs.io/zh_CN/latest/chapters/p12_concurrency.html" target="_blank" rel="noopener">Python 3 cookbook 并发编程</a><br><a href="https://blog.louie.lu/2017/05/19/%E6%B7%B1%E5%85%A5-gil-%E5%A6%82%E4%BD%95%E5%AF%AB%E5%87%BA%E5%BF%AB%E9%80%9F%E4%B8%94-thread-safe-%E7%9A%84-python-grok-the-gil-how-to-write-fast-and-thread-safe-python/" target="_blank" rel="noopener">深入 GIL: 如何寫出快速且 thread-safe 的 Python – Grok the GIL: How to write fast and thread-safe Python</a></p>
+<p><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/00143192823818768cd506abbc94eb5916192364506fa5d000" target="_blank" rel="noopener">多线程</a><br><a href="https://blog.csdn.net/suipingsp/article/details/40303789" target="_blank" rel="noopener">Python多线程之threading Event</a><br><a href="https://blog.csdn.net/ns2250225/article/details/45501333" target="_blank" rel="noopener">【Python】threading.Event模块控制多线程</a><br><a href="https://docs.python.org/3/library/concurrent.futures.html" target="_blank" rel="noopener">Launching parallel tasks</a><br><a href="http://zhaochj.github.io/2016/08/14/2016-08-14-%E7%BA%BF%E7%A8%8B%E7%9A%84event%E7%89%B9%E6%80%A7/" target="_blank" rel="noopener">python多线程间通信机制-event</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/thread/" rel="tag"># thread</a>
+          
+            <a href="/tags/threading/" rel="tag"># threading</a>
+          
+            <a href="/tags/GIL/" rel="tag"># GIL</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/c07/" rel="next" title="Python 匿名函数、内置高阶函数、偏函数">
+                <i class="fa fa-chevron-left"></i> Python 匿名函数、内置高阶函数、偏函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/ce0d/" rel="prev" title="Python SFTP上传本地目录到远程服务器">
+                Python SFTP上传本地目录到远程服务器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMjM5OS84OTYw"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/resource/images/my_avatar.jpg"
+                alt="Wayde" />
+            
+              <p class="site-author-name" itemprop="name">Wayde</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">140</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">112</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/Wayde2014" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://stackoverflow.com/users/8013174/pandllcom" target="_blank" title="StackOverflow">
+                      
+                        <i class="fa fa-fw fa-stack-overflow"></i>StackOverflow</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://instagram.com/wayde2015" target="_blank" title="Instagram">
+                      
+                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text"><span id="thread">thread</span></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text"><span id="threading">threading</span></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text"><span id="gil">GIL</span></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<!-- Default Statcounter code for blog.pandll.com
+https://blog.pandll.com -->
+<script type="text/javascript">
+var sc_project=8761787;
+var sc_invisible=1;
+var sc_security="83c65835";
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics"
+href="http://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="//c.statcounter.com/8761787/0/83c65835/1/" alt="Web
+Analytics"></a></div></noscript>
+<!-- End of Statcounter Code -->
+
+<div class="copyright">&copy; 2012&ndash;<span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wayde</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom"><a href="https://beian.miit.gov.cn">粤ICP备2020135844号</a><script type="text/javascript">var sc_project=8761787;var sc_invisible=1;var sc_security="83c65835";</script><script type="text/javascript" src="https://www.statcounter.com/counter/counter.js"async></script><noscript><div class="statcounter"><a title="web statistics"href="https://statcounter.com/" target="_blank"><imgclass="statcounter"src="https://c.statcounter.com/8761787/0/83c65835/1/"alt="web statistics"referrerPolicy="no-referrer-when-downgrade"></a></div></noscript></div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script>
+
+
+  
+
+</body>
+</html>
